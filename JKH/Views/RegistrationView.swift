@@ -79,21 +79,11 @@ class RegistrationView: UIViewController {
     }(UIButton(primaryAction: haveAccountButtonAction))
     
     lazy var registrationButtonAction = UIAction { [weak self] _ in
-        // заглушка
-        var name = self?.nameTextField.text ?? "error"
-        var email = self?.emailTextField.text ?? "error"
-        var password = self?.passwordTextField.text ?? "error"
-        
- 
-        
-        DispatchQueue.main.async {
-            self?.FBService.regUser(name: name, email: email, password: password)
-        }
-        self?.navigationController?.pushViewController(LoginView(), animated: true)
+
     }
     
     lazy var haveAccountButtonAction = UIAction { _ in
-        // заглушка
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.login])
     }
 
     override func viewDidLoad() {
@@ -105,7 +95,6 @@ class RegistrationView: UIViewController {
     
     private func setupView() {
         
-//        view.backgroundColor = .lightGray
         let backgroundImageView = UIImageView(frame: UIScreen.main.bounds)
         backgroundImageView.image = UIImage(named: "RegBg")
         backgroundImageView.contentMode = .scaleAspectFill
