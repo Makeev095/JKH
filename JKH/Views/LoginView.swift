@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Lottie
 
 class LoginView: UIViewController {
     
     private var fbService = FirebaseService()
+    
+    private let loadingAnimation = LottieAnimationView(name: "LoadingAnimation")
     
     lazy var authLabel: UILabel = {
         $0.text = "Авторизация"
@@ -63,18 +66,31 @@ class LoginView: UIViewController {
         
         guard let self = self else { return }
         
+        loadingAnimation.isHidden = false
+        authButton.setTitle("", for: .normal)
+        loadingAnimation.loopMode = .loop
+        loadingAnimation.play()
+        
         let email = emailTextField.text ?? ""
         let password = passwordTextField.text ?? ""
         
         let user = UserData(name: nil, email: email, password: password)
         
-        fbService.authUser(user: user) { isLogin in
+        fbService.authUser(user: user) { [weak self] isLogin in
+            
+            guard let self = self else { return }
+            
             if isLogin {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.home])
+                
+                loadingAnimation.stop()
+                loadingAnimation.isHidden = true
             } else {
                 print("Не вошел")
             }
         }
+        
+ 
 
     }
     
@@ -96,6 +112,8 @@ class LoginView: UIViewController {
         backgroundImageView.contentMode = .scaleAspectFill
         self.view.insertSubview(backgroundImageView, at: 0)
         
+        loadingAnimation.isHidden = true
+        
         view.addSubview(authLabel)
         view.addSubview(emailTextFieldView)
         emailTextFieldView.addSubview(emailTextField)
@@ -103,6 +121,7 @@ class LoginView: UIViewController {
         passwordTextFieldView.addSubview(passwordTextField)
         view.addSubview(authButton)
         view.addSubview(registrationButton)
+        view.addSubview(loadingAnimation)
     }
     
     private func setupConstraints() {
@@ -113,6 +132,7 @@ class LoginView: UIViewController {
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
         authButton.translatesAutoresizingMaskIntoConstraints = false
         registrationButton.translatesAutoresizingMaskIntoConstraints = false
+        loadingAnimation.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             
@@ -143,7 +163,12 @@ class LoginView: UIViewController {
             authButton.bottomAnchor.constraint(equalTo: registrationButton.topAnchor, constant: -15),
             authButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
             authButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
-            authButton.heightAnchor.constraint(equalToConstant: 50)
+            authButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            loadingAnimation.centerXAnchor.constraint(equalTo: authButton.centerXAnchor),
+            loadingAnimation.centerYAnchor.constraint(equalTo: authButton.centerYAnchor),
+            loadingAnimation.widthAnchor.constraint(equalToConstant: 50),
+            loadingAnimation.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 }
