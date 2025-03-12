@@ -72,7 +72,7 @@ class LoginView: UIViewController {
             if isLogin {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.home])
             } else {
-                print("Error")
+                print("Не вошел")
             }
         }
 
@@ -81,7 +81,7 @@ class LoginView: UIViewController {
     lazy var registrationButtonAction = UIAction { _ in
         NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.reg])
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()

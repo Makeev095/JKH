@@ -35,18 +35,22 @@ class FirebaseService {
     }
     
     func authUser(user: UserData, completion: @escaping (Bool) -> Void) {
-        Auth.auth().signIn(withEmail: user.email, password: user.password) { result, error in
+        Auth.auth().signIn(withEmail: user.email, password: user.password) { [weak self] result, error in
+            
+            guard let self = self else { return }
             
             guard error == nil else {
-                print(error?.localizedDescription)
+                print(error!)
                 completion(false)
                 return
             }
             
-            guard let uid = result?.user.uid else {
-                completion(true)
+            guard let _ = result?.user.uid else {
+                completion(false)
                 return
             }
+            
+            completion(true)
         }
     }
     
