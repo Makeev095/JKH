@@ -8,15 +8,9 @@
 import UIKit
 import Firebase
 
-struct UserData {
-    let name: String
-    let email: String
-    let password: String
-}
-
 class RegistrationView: UIViewController {
     
-    let FBService = FirebaseService()
+    private var fbService = FirebaseService()
     
     lazy var registrationLabel: UILabel = {
         $0.text = "Регистрация"
@@ -79,7 +73,20 @@ class RegistrationView: UIViewController {
     }(UIButton(primaryAction: haveAccountButtonAction))
     
     lazy var registrationButtonAction = UIAction { [weak self] _ in
-
+        guard let self = self else { return }
+        
+        let name = nameTextField.text
+        let email = emailTextField.text
+        let password = passwordTextField.text
+        
+        let user = UserData(name: name ?? "", email: email ?? "", password: password ?? "")
+        fbService.regUser(user: user, completion: { isLogin in
+            if isLogin {
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.home])
+            } else {
+                print("Error Login")
+            }
+        })
     }
     
     lazy var haveAccountButtonAction = UIAction { _ in

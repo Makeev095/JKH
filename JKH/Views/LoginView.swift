@@ -9,6 +9,8 @@ import UIKit
 
 class LoginView: UIViewController {
     
+    private var fbService = FirebaseService()
+    
     lazy var authLabel: UILabel = {
         $0.text = "Авторизация"
         $0.textColor = .white
@@ -58,6 +60,21 @@ class LoginView: UIViewController {
     }(UIButton(primaryAction: registrationButtonAction))
     
     lazy var authButtonAction = UIAction { [weak self] _ in
+        
+        guard let self = self else { return }
+        
+        let email = emailTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        
+        let user = UserData(name: nil, email: email, password: password)
+        
+        fbService.authUser(user: user) { isLogin in
+            if isLogin {
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "RootVC"), object: nil, userInfo: ["VC" : WindowCase.home])
+            } else {
+                print("Error")
+            }
+        }
 
     }
     

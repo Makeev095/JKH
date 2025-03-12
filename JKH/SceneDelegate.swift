@@ -8,10 +8,12 @@
 import UIKit
 
 enum WindowCase {
-    case login, reg
+    case login, reg, home
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    
+    private let fbService = FirebaseService()
 
     var window: UIWindow?
 
@@ -22,7 +24,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
-        window?.rootViewController = windowManager(vc: .reg)
+        
+        if fbService.isLogin() {
+            window?.rootViewController = windowManager(vc: .home)
+        } else {
+            window?.rootViewController = windowManager(vc: .reg)
+        }
         window?.makeKeyAndVisible()
     }
     
@@ -32,6 +39,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return LoginView()
         case .reg:
             return RegistrationView()
+        case .home:
+            return HomeView()
         }
     }
     
