@@ -29,19 +29,26 @@ class HomeView: UIViewController {
     }
     
     func setupView() {
-        view.backgroundColor = .green
+//        view.backgroundColor = .green
         
-        view.addSubview(signOutButton)
+        let backgroundImageView = UIImageView(frame: UIScreen.main.bounds)
+        backgroundImageView.image = UIImage(named: "HomeBg")
+        backgroundImageView.contentMode = .scaleAspectFill
+        self.view.insertSubview(backgroundImageView, at: 0)
+        
+//        view.addSubview(signOutButton)
     }
     
     func setupConstraints() {
         signOutButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            signOutButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            signOutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            signOutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            signOutButton.heightAnchor.constraint(equalToConstant: 50)
+//            signOutButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+//            signOutButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+//            signOutButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+//            signOutButton.heightAnchor.constraint(equalToConstant: 50)
+            
+            
         ])
     }
 }
