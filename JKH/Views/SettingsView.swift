@@ -5,17 +5,6 @@
 //  Created by Дмитрий Макеев on 12.03.2025.
 //
 
-//import UIKit
-//
-//class SettingsView: UIViewController {
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        
-//        view.backgroundColor = .lightGray
-//    }
-//}
-
 import UIKit
 
 class SettingsView: UIViewController {
@@ -32,32 +21,32 @@ class SettingsView: UIViewController {
         
         // Создаём секции настроек
         let accountSection = createSectionView(
-            withTitle: "Account",
+            withTitle: "Аккаунт",
             backgroundColor: UIColor(red: 0.93, green: 0.33, blue: 0.23, alpha: 1.0),
             iconName: "person.crop.circle.fill"
         )
         
         let notificationsSection = createSectionView(
-            withTitle: "Notifications",
+            withTitle: "Уведомления",
             backgroundColor: UIColor(red: 0.00, green: 0.47, blue: 0.95, alpha: 1.0),
             iconName: "bell.circle.fill"
         )
         
         let privacySection = createSectionView(
-            withTitle: "Privacy",
+            withTitle: "Политика конфиденциальности",
             backgroundColor: UIColor(red: 0.56, green: 0.73, blue: 0.57, alpha: 1.0),
             iconName: "lock.circle.fill"
         )
         
         let generalSection = createSectionView(
-            withTitle: "General",
+            withTitle: "Общие",
             backgroundColor: UIColor(red: 0.94, green: 0.77, blue: 0.15, alpha: 1.0),
             iconName: "gear.circle.fill"
         )
         
         // Настройка плавающей кнопки "Сохранить"
         let saveButton = UIButton(type: .system)
-        saveButton.setTitle("Save Changes", for: .normal)
+        saveButton.setTitle("Сохранить изменения", for: .normal)
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.backgroundColor = UIColor(red: 0.30, green: 0.60, blue: 0.85, alpha: 1.0)
         saveButton.layer.cornerRadius = 25
