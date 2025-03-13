@@ -14,6 +14,7 @@ enum WindowCase {
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     private let fbService = FirebaseService()
+    private let tabBar = TabBarView()
 
     var window: UIWindow?
 
@@ -40,8 +41,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case .reg:
             return RegistrationView()
         case .home:
-//            return createHomeTabBarController()
-            return HomeView()
+            return tabBar.createHomeTabBarController()
+//            return HomeView()
         }
     }
     
@@ -49,30 +50,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let userInfo = notification.userInfo, let vc = userInfo["VC"] as? WindowCase else { return }
         self.window?.rootViewController = windowManager(vc: vc)
     }
-    
-//    private func createHomeTabBarController() -> UITabBarController {
-//        let tabBarController = UITabBarController()
-//        
-//        let homeViewController = HomeView()
-//        homeViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 0)
-//        
-//        let settingsViewController = SettingsView()  // Предположительно ваше другое представление
-//        settingsViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 1)
-//        
-//        tabBarController.viewControllers = [homeViewController, settingsViewController]
-//        
-//        // Кастомизация внешнего вида Tab Bar
-//        if let items = tabBarController.tabBar.items {
-//            for item in items {
-//                // Цвет иконок в состоянии по умолчанию
-//                item.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .normal)
-//                // Цвет иконок в выбранном состоянии
-//                item.setTitleTextAttributes([.foregroundColor: UIColor.blue], for: .selected)
-//            }
-//        }
-//        
-//        tabBarController.tabBar.layer.masksToBounds = true
-//        
-//        return tabBarController
-//    }
 }
