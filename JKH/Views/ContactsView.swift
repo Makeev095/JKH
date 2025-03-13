@@ -52,9 +52,9 @@ class ContactsView: UIViewController {
         logoImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         // Добавление секций
-        let phoneSection = createInfoSection(title: "Номера телефонов", details: ["Офис: +7(8793) 38-15-80", "Аварийная служба (Круглосуточно): +7 (928) 825-61-86"])
+        let phoneSection = createInfoSection(title: "Номера телефонов", details: ["Офис: +7(8793) 38-15-80", "Аварийная служба (Круглосуточно):           +7 (928) 825-61-86"])
         let emailSection = createInfoSection(title: "Email", details: ["uk.cheremushki@gmail.com"])
-        let addressSection = createInfoSection(title: "Адрес", details: ["г. Москва, ул. Пушкина, д. 19"])
+        let addressSection = createInfoSection(title: "Адрес", details: ["г. Пятигорск, ул. Булгакова, д. 19"])
         
         let hoursDetails = [
             "Понедельник: 9:00 - 17:00",

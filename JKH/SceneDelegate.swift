@@ -41,8 +41,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         case .reg:
             return RegistrationView()
         case .home:
-            return tabBar.createHomeTabBarController()
-//            return HomeView()
+            return tabBar
         }
     }
     
