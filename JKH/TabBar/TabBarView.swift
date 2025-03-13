@@ -44,6 +44,12 @@ class TabBarView: UITabBarController {
         contactsNavController.tabBarItem.selectedImage = UIImage(systemName: "person.crop.circle.fill")
         contactsNavController.tabBarItem.title = "Контакты"
         
-        return [homeViewController, settingsNavController, contactsNavController]
+        let meterReadingViewController = MeterReadingViewController()
+//        let meterReadingViewController = UINavigationController(rootViewController: meterReadingViewController)
+        meterReadingViewController.tabBarItem.image = UIImage(systemName: "gauge.with.dots.needle.33percent")
+        meterReadingViewController.tabBarItem.selectedImage = UIImage(systemName: "gauge.with.dots.needle.67percent")
+        meterReadingViewController.tabBarItem.title = "Подать показания"
+        
+        return [homeViewController, settingsNavController, contactsNavController, meterReadingViewController]
     }
 }
