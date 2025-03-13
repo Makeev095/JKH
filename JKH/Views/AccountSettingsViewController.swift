@@ -1,15 +1,16 @@
 //
-//  SettingsDetailViewController.swift
+//  AccountSettingsViewController.swift
 //  JKH
 //
 //  Created by Дмитрий Макеев on 13.03.2025.
 //
 
+
 import UIKit
 
-class SettingsDetailViewController: UIViewController {
-    
-    var details: [String] = []
+class AccountSettingsViewController: UIViewController {
+
+    private var fbService = FirebaseService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +19,7 @@ class SettingsDetailViewController: UIViewController {
     
     private func setupView() {
         view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
-        
+
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
@@ -42,10 +43,13 @@ class SettingsDetailViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
         
-        for detail in details {
-            let detailView = createDetailView(text: detail)
-            stackView.addArrangedSubview(detailView)
-        }
+        let detailView1 = createDetailView(text: "Имя пользователя: user123")
+        let detailView2 = createDetailView(text: "Email: user@example.com")
+        let signOutButton = createSignOutButton()
+        
+        stackView.addArrangedSubview(detailView1)
+        stackView.addArrangedSubview(detailView2)
+        stackView.addArrangedSubview(signOutButton)
     }
     
     private func createDetailView(text: String) -> UIView {
@@ -76,4 +80,23 @@ class SettingsDetailViewController: UIViewController {
         
         return sectionView
     }
+
+    private func createSignOutButton() -> UIButton {
+        let button = UIButton(type: .system, primaryAction: signOutAction)
+        button.setTitle("Выйти", for: .normal)
+        button.backgroundColor = UIColor(red: 176, green: 0, blue: 0, alpha: 0.7)
+        button.layer.cornerRadius = 10
+        button.setTitleColor(.white, for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return button
+    }
+    
+    private lazy var signOutAction: UIAction = {
+        return UIAction { [weak self] _ in
+            guard let self = self else { return }
+            fbService.signOut()
+            NotificationCenter.default.post(name: Notification.Name("RootVC"), object: nil, userInfo: ["VC" : WindowCase.login])
+        }
+    }()
 }
