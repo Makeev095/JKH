@@ -5,18 +5,30 @@
 //  Created by Дмитрий Макеев on 13.03.2025.
 //
 
-
 import UIKit
+import FirebaseAuth
 
 class AccountSettingsViewController: UIViewController {
 
-    private var fbService = FirebaseService()
-    
+    private let fbService = FirebaseService()
+    private var userName: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
+        fetchData()
     }
     
+    private func fetchData() {
+        fbService.getCurrentUserName { [weak self] name in
+            guard let self = self else { return }
+            self.userName = name  // Сохранение имени пользователя
+            
+            DispatchQueue.main.async {
+                self.setupView()  // Обновление UI
+            }
+        }
+    }
+
     private func setupView() {
         view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
 
@@ -43,15 +55,21 @@ class AccountSettingsViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
         
-        let detailView1 = createDetailView(text: "Имя пользователя: user123")
-        let detailView2 = createDetailView(text: "Email: user@example.com")
+        // Отображение имени пользователя
+        let nameText = "Имя пользователя: \(userName ?? "Неизвестно")"
+        let detailView1 = createDetailView(text: nameText)
+        
+        // Отображение email
+        let emailText = "Email: \(Auth.auth().currentUser?.email ?? "Неизвестно")"
+        let detailView2 = createDetailView(text: emailText)
+        
         let signOutButton = createSignOutButton()
         
         stackView.addArrangedSubview(detailView1)
         stackView.addArrangedSubview(detailView2)
         stackView.addArrangedSubview(signOutButton)
     }
-    
+
     private func createDetailView(text: String) -> UIView {
         let sectionView = UIView()
         sectionView.backgroundColor = .white
@@ -84,7 +102,7 @@ class AccountSettingsViewController: UIViewController {
     private func createSignOutButton() -> UIButton {
         let button = UIButton(type: .system, primaryAction: signOutAction)
         button.setTitle("Выйти", for: .normal)
-        button.backgroundColor = UIColor(red: 176, green: 0, blue: 0, alpha: 0.7)
+        button.backgroundColor = .red
         button.layer.cornerRadius = 10
         button.setTitleColor(.white, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -100,3 +118,4 @@ class AccountSettingsViewController: UIViewController {
         }
     }()
 }
+

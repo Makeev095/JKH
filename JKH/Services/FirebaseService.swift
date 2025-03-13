@@ -71,6 +71,25 @@ class FirebaseService {
         }
     }
     
+    func getCurrentUserName(completion: @escaping (String?) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(nil)
+            return
+        }
+        
+        Firestore.firestore().collection("Users").document(uid).getDocument { document, error in
+            if let error = error {
+                print("Error fetching user: $$error)")
+                completion(nil)
+            } else if let document = document, document.exists {
+                let name = document.data()?["Name"] as? String
+                completion(name)
+            } else {
+                completion(nil)
+            }
+        }
+    }
+    
 }
 
 
