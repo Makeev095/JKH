@@ -4,15 +4,16 @@
 //
 //  Created by Дмитрий Макеев on 13.03.2025.
 //
+//
 
 import UIKit
 
-class MeterReadingViewController: UIViewController {
+class MeterReadingViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
-    private let waterMeterField = UITextField()
-    private let gasMeterField = UITextField()
-    private let submitButton = UIButton(type: .system)
-
+    private let addressPicker = UIPickerView()
+    private let addresses = ["Булгакова 2", "Булгакова 3", "Булгакова 5"] // Заранее определенный список адресов
+    private var selectedAddress: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -44,80 +45,101 @@ class MeterReadingViewController: UIViewController {
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
         ])
         
-        // Настройка поля для воды
-        waterMeterField.placeholder = "Введите показания воды"
-        waterMeterField.borderStyle = .roundedRect
-        styleField(waterMeterField)
+        addressPicker.delegate = self
+        addressPicker.dataSource = self
+        addressPicker.translatesAutoresizingMaskIntoConstraints = false
+        addressPicker.layer.cornerRadius = 10
+        addressPicker.backgroundColor = .white
+        addressPicker.layer.shadowColor = UIColor.black.cgColor
+        addressPicker.layer.shadowOffset = CGSize(width: 0, height: 5)
+        addressPicker.layer.shadowRadius = 10
+        addressPicker.layer.shadowOpacity = 0.3
         
-        // Настройка поля для газа
-        gasMeterField.placeholder = "Введите показания газа"
-        gasMeterField.borderStyle = .roundedRect
-        styleField(gasMeterField)
+        let waterMeterField = createTextField(placeholder: "Введите показания воды")
+        let gasMeterField = createTextField(placeholder: "Введите показания газа")
         
-        // Настройка кнопки отправки
-        submitButton.setTitle("Отправить", for: .normal)
-        submitButton.backgroundColor = .systemBlue
-        submitButton.setTitleColor(.white, for: .normal)
-        submitButton.layer.cornerRadius = 10
-        submitButton.addTarget(self, action: #selector(submitReadings), for: .touchUpInside)
-        submitButton.translatesAutoresizingMaskIntoConstraints = false
-        submitButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        stackView.addArrangedSubview(createDetailView(with: waterMeterField))
-        stackView.addArrangedSubview(createDetailView(with: gasMeterField))
-        stackView.addArrangedSubview(submitButton)
+        stackView.addArrangedSubview(wrapInContainer(view: addressPicker))
+        stackView.addArrangedSubview(wrapInContainer(view: waterMeterField))
+        stackView.addArrangedSubview(wrapInContainer(view: gasMeterField))
+        stackView.addArrangedSubview(createSubmitButton())
     }
-
-    private func styleField(_ textField: UITextField) {
-        textField.backgroundColor = .white
+    
+    private func createTextField(placeholder: String) -> UITextField {
+        let textField = UITextField()
+        textField.placeholder = placeholder
+        textField.borderStyle = .none
         textField.layer.cornerRadius = 10
+        textField.backgroundColor = .white
         textField.layer.shadowColor = UIColor.black.cgColor
         textField.layer.shadowOffset = CGSize(width: 0, height: 5)
         textField.layer.shadowRadius = 10
         textField.layer.shadowOpacity = 0.3
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        return textField
     }
-    
-    private func createDetailView(with field: UITextField) -> UIView {
-        let containerView = UIView()
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 10
-        containerView.layer.shadowColor = UIColor.black.cgColor
-        containerView.layer.shadowOffset = CGSize(width: 0, height: 5)
-        containerView.layer.shadowRadius = 10
-        containerView.layer.shadowOpacity = 0.3
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        
-        containerView.addSubview(field)
+
+    private func wrapInContainer(view: UIView) -> UIView {
+        let container = UIView()
+        container.layer.cornerRadius = 10
+        container.backgroundColor = .white
+        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowOffset = CGSize(width: 0, height: 5)
+        container.layer.shadowRadius = 10
+        container.layer.shadowOpacity = 0.3
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(view)
         
         NSLayoutConstraint.activate([
-            field.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 15),
-            field.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -15),
-            field.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15),
-            field.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -15)
+            view.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 15),
+            view.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -15),
+            view.topAnchor.constraint(equalTo: container.topAnchor, constant: 15),
+            view.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -15)
         ])
         
-        return containerView
+        return container
     }
-
+    
+    private func createSubmitButton() -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle("Отправить", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = .systemBlue
+        button.layer.cornerRadius = 10
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 5)
+        button.layer.shadowRadius = 10
+        button.layer.shadowOpacity = 0.3
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        button.addTarget(self, action: #selector(submitReadings), for: .touchUpInside)
+        return button
+    }
+    
     @objc private func submitReadings() {
-        guard let waterReading = waterMeterField.text, !waterReading.isEmpty,
-              let gasReading = gasMeterField.text, !gasReading.isEmpty else {
-            // Обработать ошибку
+        guard let selectedAddress = selectedAddress else {
+            // Обработка ошибки: адрес не выбран
             return
         }
-
-        // Выполнить действия с данными
-        saveReadingsToFirebase(water: waterReading, gas: gasReading)
-        uploadReadingsToGoogleSheets(water: waterReading, gas: gasReading)
+        // Реализация логики отправки показаний
+        print("Отправка показаний для адреса $$selectedAddress)")
     }
-
-    private func saveReadingsToFirebase(water: String, gas: String) {
-        // Сохранение данных в Firebase
+    
+    // MARK: - UIPickerViewDelegate & DataSource
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
     }
-
-    private func uploadReadingsToGoogleSheets(water: String, gas: String) {
-        // Загрузка данных в Google Sheets
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return addresses.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return addresses[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selectedAddress = addresses[row]
     }
 }
