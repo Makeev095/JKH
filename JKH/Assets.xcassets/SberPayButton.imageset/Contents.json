@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "SberPayButton.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
