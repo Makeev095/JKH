@@ -73,7 +73,7 @@ class FirebaseService {
                let encrypted = try aes.encrypt(Array(data.utf8))
                return encrypted.toBase64()
            } catch {
-               print("Error encrypting data: $$error.localizedDescription)")
+               print("Error encrypting data: \(error.localizedDescription)")
                return nil
            }
        }
